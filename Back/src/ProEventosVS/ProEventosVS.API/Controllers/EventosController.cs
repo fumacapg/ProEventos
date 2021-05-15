@@ -13,7 +13,6 @@ namespace ProEventosVS.API.Controllers
 {
         private readonly DataContext _context;      
 
-        ///Teste
         public EventosController(DataContext context)
         {
             _context = context; 
