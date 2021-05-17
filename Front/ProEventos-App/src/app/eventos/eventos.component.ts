@@ -8,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventosComponent implements OnInit {
 
-  public eventos: any;
+  public eventos: any = [];
+  public eventosFiltrados: any = [];
+  tamanhoImagem = 150;
+  margemImagem = 2;
+  exibirImagem = true;
+  private _filtroLista = "";
+
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -17,26 +23,29 @@ export class EventosComponent implements OnInit {
 
   public getEventos(): void{
     this.http.get('https://localhost:44393/api/eventos')
-      .subscribe(response => this.eventos = response,
+      .subscribe(response => {
+        this.eventos = response,
+        this.eventosFiltrados = this.eventos
+        },
         error => console.log(error)
     );
+  }
 
+  public get filtroLista(): string{
+    return this._filtroLista;
+  }
 
+  public set filtroLista(value: string){
+    this._filtroLista = value;
+    this.eventosFiltrados = this.filtroLista ? this.filtraLista(this.filtroLista):this.eventos;
+  }
 
-    this.eventos =[
-      {
-        Tema: 'Angular 11',
-        Local: 'Praia Grande'
-      },
-      {
-        Tema: '.Net 5',
-        Local: 'São Paulo'
-      },
-      {
-        Tema: 'Angular e suas Novidades',
-        Local: 'Rio de Janeiro'
-      }
-    ];
+  filtraLista(filtrarPor: string): any{
+    filtrarPor = filtrarPor.toLocaleLowerCase();
+    return this.eventos.filter(
+      (evento: any) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
+                       evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+    )
   }
 
 }
